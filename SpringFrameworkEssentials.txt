@@ -1,0 +1,63 @@
+@Introducing the Spring Framework
+    -> The History of Spring
+	    *Java EE:
+	      components: jar, war, ear
+	      containers: web, ejb
+	      services: security, transactional, persistence, resource pooling
+	    *Meta-Data
+	      XML -> Deployment Descriptor
+	      ...
+	    *Lightweight Container
+	      Provide services to POJOs
+	      ...
+	    *Spring Versions
+	      .Spring 1.0 -> 2004
+	      .Spring 2.0 -> 2006
+	        Simplified XML configuration
+	      .Spring 2.5 -> 2007
+	        Annotation configuration
+	      .Spring 3.0 -> 2010 to 2012
+	        .Spring 3.2 -> 2012
+	         Support for Java 7, Hibernate 4, Servlet 3.0
+	         Required Java 1.5+
+	         Java Configuration approach
+	      .Spring 4.0 -> 2014
+	        Supports Java 8 (Lambdas/MetaReferences/...)
+	      .Spring Boot -> 2014
+	        Makes particularly easy to create a Spring Applciation and configure a 
+	        Spring Application and get only the features you want, when you want them
+    -> Getting Started (http://springframework.org | http://spring.io)
+         Projects>Spring Framework -> Documentation (Reference|API)
+            Spring Framework Reference Documentation>>> 
+             Is the first place where you should go when you have questions about how to use Spring.
+             Essentially is a tutorial on how to use Spring and will show you hopefully answers to all the 
+             questions that you may have.
+                -> Inversion of Control (Container (IoC)) -> Injecting Dependencies:
+                  *Dependency -> Is simply an Attribute/Method argument/return type
+                  *Injection  -> Calling a setter method, or using a constructor argument
+                  *MetaData describes the actual classes and services that we want Spring 
+                   wires everything together and manages the life-cycle of the result. 
+                   => It'll creates the Beans automatically and plug-in them as required
+                     We rarely instantiate beans
+                     We don't look them up
+                     -> We simply declare the dependency by simply putting in the Attribute or some MetaData
+                      then Spring will lookup the bean it needs and plugin it automatically
+            	  NOTE: IoC doesn't sound like a lot, but in fact it can be an enourmous time saver.
+            	=> Explaining Spring
+            	 If I try to show you a "Hello, World" in Spring, then you'll look at that and go 
+            	 ¿Why am I using Spring at all? At first Spring doesn't show a lot of beneficts if your 
+            	 application is one or two classes, then you simply will prefer be replacing instantiation on 
+            	 your on instead all the bunch of metadata required to tell Spring how to doit for you.
+            	 ...Spring Framework starts to pay-off is when you have a much larger application that requires
+            	 a fenomenal architecture. (Multiple Data Sources/Transaction Support/Security/Resource Pooling)
+            	 then Spring provides the infraestructure in very easy/regulated way.
+            Spring Framework API>>>
+             SF.API provides thouthands of classes, making you wonder what the word lighweight means 
+             when you hear that this is a lightweight container when in fact the number of classes bastly
+             exceeds in Java EE. The reasons there are so many classes is another interesting feature of
+             Spring, that we're going to be using over and over again.
+              -> Spring favors an interface/class separation.
+                Write your code in term of interfaces
+                Tell Spring which classes to provide
+                "wire everything together"
+
