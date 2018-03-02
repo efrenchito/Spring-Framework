@@ -1,3 +1,6 @@
+https://www.safaribooksonline.com/library/view/spring-framework-essentials/9781491942680/video236093.html
+https://www.youtube.com/watch?v=2prdt2byiTs
+
 @Introducing the Spring Framework
     -> The History of Spring
 	    *Java EE:
@@ -28,11 +31,26 @@
 	        Spring Application and get only the features you want, when you want them
     -> Getting Started (http://springframework.org | http://spring.io)
          Projects>Spring Framework -> Documentation (Reference|API)
-            Spring Framework Reference Documentation>>> 
+            + Spring Framework Reference Documentation>>> 
              Is the first place where you should go when you have questions about how to use Spring.
              Essentially is a tutorial on how to use Spring and will show you hopefully answers to all the 
              questions that you may have.
-                -> Inversion of Control (Container (IoC)) -> Injecting Dependencies:
+                -> Dependency Injection Overiew
+                 The technology that Spring most identified with is the Dependency Injection (DI) flavor of Inversion of Control.
+                 The Inversion of Control (IoC) is a general concept, and it can be expressed in many different ways. Dependency 
+                 Injection is marely one concrete example of Inversion of Control.
+
+                 When writing a complex Java application, application classes should be as independent as possible of other Java
+                 classes should be as independent as possible of other Java classes to increase the possibility to reuse these 
+                 classes and to test them independently of other classes while unit testing. Dependency Injection helps in gluing these classes together and at the same time keeping them independent
+                -> What is Dependency Injection
+                 What exactly is dependency injection? Let's look at these two words separately.
+                 Here the dependency part translates into an association between two classes. For example class A is dependent of Class B. Now, let's look at the second part, injection. All this means is, class B will get injected into class 
+                 A by the IoC. 
+                 Dependency Injection can happen in the way of passing parameters to the constructor or by post-construction 
+                 using setter methods.
+                 
+                 Inversion of Control (Container (IoC)) -> Injecting Dependencies:
                   *Dependency -> Is simply an Attribute/Method argument/return type
                   *Injection  -> Calling a setter method, or using a constructor argument
                   *MetaData describes the actual classes and services that we want Spring 
@@ -43,15 +61,50 @@
                      -> We simply declare the dependency by simply putting in the Attribute or some MetaData
                       then Spring will lookup the bean it needs and plugin it automatically
             	  NOTE: IoC doesn't sound like a lot, but in fact it can be an enourmous time saver.
-            	=> Explaining Spring
+            	-> What is a Bean
+            	 A Java Bean is a Java class that should follow following conventions:
+            	   . It should have a no-arg constructor.
+            	   . It should be Serializable
+            	   . It should provide getter and setters methods. 
+            	    //EmployeeBean
+            	     package mypack; c
+            	     public class Employee implements java.io.Serializable {
+            	       private int id;
+            	       private String name;
+
+            	       public Employee(){}
+
+            	       public void setId(int id){this.id = id;}
+            	       public int getId(){return id;}
+            	       public void setName(String name){this.name=name;}
+            	       public String getName(){return name;}
+            	     }
+            	-> IOC Container
+            	 The Spring container is at the core of the Spring Framework.
+            	 The container will create the objects, wire them together, configure them, and manage their
+            	 complete life cycle from creation till destruction. The Spring container uses DI to manage
+            	 the components that make up an application. These objects are called Spring beans.
+            	 The container gest its instructions on what objects to instantiate, configure and assemble by 
+            	 reading the configuration metadata provided. The configuration metadata can be represented 
+            	 either by XML, Java annotations, or Java code. The Spring IoC container makes use of Java POJO
+            	 classes and configuration metadata to produce a fully configured and executable system or application.
+
+            	 Spring provides two distinct types of containers.
+            	  - BeanFactory Container: It's generally recomended over BeanFactory. BeanFactory can still be used for 
+            	  lightweight applications like mobile devices or applet-based applications where data volume and spped is
+            	  significant.
+            	  - ApplicationContext Container includes all functionality of the BeanFactoryContainer, so it is generally 
+            	  recomended over BeanFactory
+            	=>>> Explaining Spring
             	 If I try to show you a "Hello, World" in Spring, then you'll look at that and go 
             	 ¿Why am I using Spring at all? At first Spring doesn't show a lot of beneficts if your 
             	 application is one or two classes, then you simply will prefer be replacing instantiation on 
             	 your on instead all the bunch of metadata required to tell Spring how to doit for you.
             	 ...Spring Framework starts to pay-off is when you have a much larger application that requires
             	 a fenomenal architecture. (Multiple Data Sources/Transaction Support/Security/Resource Pooling)
-            	 then Spring provides the infraestructure in very easy/regulated way.
-            Spring Framework API>>>
+            	 then Spring provides the infraestructure in very easy/regulated way...
+            	 So it's not when you have to create a Container but when you need to do something really interesting that Spring Framework will become very valuable to you     
+            + Spring Framework API>>>
              SF.API provides thouthands of classes, making you wonder what the word lighweight means 
              when you hear that this is a lightweight container when in fact the number of classes bastly
              exceeds in Java EE. The reasons there are so many classes is another interesting feature of
@@ -61,3 +114,548 @@
                 Tell Spring which classes to provide
                 "wire everything together"
 
+@Building Applications
+    Download/Install&Open Eclipse Oxigen
+     1.Window>Perspective>Open Perspective -> JEE
+     2.File>New -> Maven Project
+      . [check] Create a simple project (skyp archetype selection)
+      . [check] Use default Workspace location 
+        -> Click on [Next]
+      . New Maven Project
+        Artifact
+         Group Id: org.nerfe
+         Artifact Id: springF4Beginners
+         Version: 0.0.1-SNAPSHOT
+         Packaging: jar
+         -> Click on [Finish]
+
+        //springFWk4Beginners/pom.xml
+          <project xmlns="..." xmlns:xsi="..." xsi:schemaLocation="...">
+   	        <modelVersion>4.0</modelVersion>
+   	        <groupId>org.nerfe</groupId>
+   	        <artifactId>springFWK4Beginners</artifactId>
+   	        <version>0.0.1-SNAPSHOT</version>
+
+   	        <dependencies>
+   	          <!-- http://search.maven.org -->
+   	          <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>5.0.4.RELEASE</version>
+	          </dependency>
+	          <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>5.0.4.RELEASE</version>
+              </dependency>
+   	        </dependencies>
+   	      </project>
+   	    //springFWk4Beginners/src/main/java/Bean.xml
+   	      <?xml version="1.0" encoding="utf-8"?>
+   	       <beans xmlns="..." xmlns:xsi="..." xsi:schemaLocation="...">
+   	         <!-- bean definitions here -->
+   	         <bean id="Point2d10" class="org.nerfe.Point2D">
+   	           <property name="x" value="10" />
+   	           <property name="y" value="10" />
+   	         </bean>
+   	         <bean id="Point3D15" class="org.nerfe.Point3D">
+   	           <property name="x" value="15" />
+   	           <property name="y" value="15" />
+   	           <property name="z" value="15" />
+   	         </bean>
+   	       </beans>
+   	    //springFWk4Beginners/src/main/java/org.nerfe.Point2D.java
+   	      package org.nerfe;
+  
+		  public class Point2D {
+			  private int x;
+			  private int y;
+			  public int getX() {
+				  return x;
+			  }
+			  public void setX(int x) {
+				  this.x = x;
+			  }
+			  public int getY() {
+				  return y;
+			  }
+			  public void setY(int y) {
+				  this.y = y;
+			  }
+		  }
+		//springFWk4Beginners/src/main/java/org.nerfe.Point3D.java  
+		  package org.nerfe;
+  
+		  public class Point3D {
+			  private int x;
+			  private int y;
+			  private int z;
+  			
+			  public int getX() {
+				  return x;
+			  }
+			  public void setX(int x) {
+				  this.x = x;
+			  }
+			  public int getY() {
+				  return y;
+			  }
+			  public void setY(int y) {
+				  this.y = y;
+			  }
+			  public int getZ() {
+				  return z;
+			  }
+			  public void setZ(int z) {
+				  this.z = z;
+			  }
+  
+		  }
+   	    //springFWk4Beginners/src/main/java/org.nerfe.ApplicationStart.java
+   	      package org.nerfe;
+
+   	      import org.springframework.context.ApplicationContext;
+   	      import org.springframework.context.support.ClassPathXMLApplicationContext;
+
+   	      public class ApplicationStart {
+   	        public static void main(String[] args){
+   	          ApplicationContext applicationContext = new ClassPathXMLApplicationContext("beans.xml");
+   	          System.out.println("<<<<< Point2D >>>>>");
+   	          Point2D p2D = (Point2D) applicationContext.getBean("Point2d10");
+   	          System.out.println(p2D.getX());
+   	          System.out.println(p2D.getY());
+
+   	          System.out.println("<<<<< Point3D >>>>>");
+   	          Point3D p3D = (Point3D) applicationContext.getBean("Point3D15");
+   	          System.out.println(p3D.getX());
+   	          System.out.println(p3D.getY());
+   	          System.out.println(p3D.getZ());
+
+   	        }
+   	      }
+       
+    Bean Definition
+        +Name
+         This attribute specifies the bean identifier uniquely. In XMLbased configuration metadata, you use the id and/or name
+         attributes to specify the bean identifier(s)
+            <bean id="myClass" ... />
+        +Class
+         This attribute is mandatory and specifies the bean class to be used to create the Bean
+            <bean id="myClass" class="myPackage.MyClass" />
+    Setting Attributes (no-arg constructor)
+        +Setting Attributes Directly
+         In order to use set member variables directly through the Bean the class needs to have defined the no-args Constructor.
+         In Java when you don't define ANY constructor the compiler will creates a default Constructor with no-args.
+			//SettingAttributesDirectly.java
+             ...
+               public static void main(String[] args){
+                 ApplicationContext applicationContext = 
+                   new ClassPathXMLApplicationContext("Beans.xml");
+                   Animal zeb = (Animal)applicationContext.getBean("zebra");
+                   System.out.println(zeb.getWeight());
+               }
+             }
+		    //Beans.xml
+             ...
+              <!-- Definitions for Beans.xml bean -->
+              <bean id="zebra" class="org.nerfe.Animal">
+                <property name="weight" value="5.6" />
+              </bean>
+              ...
+        ...
+    PassingValues2Constructors
+        +Passing Values to Constructors
+         We can pass values to a constructor using the <constructor-arg val=[value]>. If we do Spring will cast the values 
+         accordingly and assign them to the correct data types in the constructor.
+            //PassingValues2Constructors.java
+             public class MyClass {
+               public MyClass(String message, int number){
+                System.out.println(message+" "+number);
+               }
+               public void printHello() {
+                 System.out.println("Hello");
+               }
+             }
+            //Beans.xml
+             ...
+              <bean id="MyClass" class="myPackage.Myclass">
+                <constructor-arg value="Hello" />
+                <constructor-arg value="2000" />
+              </bean>
+             ...
+        +Specifying	Consturctor variables Types
+         While Spring will cast out data types correctly most of the time, if we want to be sure that everything will work correctly we should specify the data types.
+            //PassingValues2Constructors.java
+             public class MyClass {
+               public MyClass(float myFloat, double myDouble){
+                System.out.println(myFloat+",  "+myDouble);
+               }
+               public void printHello() {
+                 System.out.println("Hello");
+               }
+             }
+            //Beans.xml
+             ...
+              <!-- Definitions for Beans.xml bean -->
+              <bean id="MyClass" class="myPackage.Myclass">
+                <constructor-arg type="float" value="12.0" />
+                <constructor-arg type="double" value="2000.2" />
+              </bean>
+             ...
+        +Specifying constructor variable Order
+         Of course the most reliable way of passing values to a constructor is by specifying the order in which that value should be passed.
+            //PassingValues2Constructors.java
+             public class MyClass {
+               public MyClass(float myFloat, double myDouble){
+                System.out.println(myFloat+",  "+myDouble);
+               }
+               public void printHello() {
+                 System.out.println("Hello");
+               }
+             }
+            //Beans.xml
+             ...
+              <!-- Definitions for Beans.xml bean -->
+              <bean id="MyClass" class="myPackage.Myclass">
+                <constructor-arg index="1" value="12.0" />
+                <constructor-arg index="0" value="2000.2" />
+              </bean>
+             ...
+        -> HOMEWORK: Create an animal bean with a double weight, a float height, and a String SpeciesName, then create
+         a constructor that will assign correct values using a string bean definition XML file.
+    Ref & Inner Beans
+        Ref-in Constructors
+            //RefInConstructors.java
+              public class Animal {
+			    private double weight;
+				private float height;
+			    private String speciesName;
+			    private Color color;
+
+			    public Animal(double weight, float height, String speciesName, Color color) {
+			    	this.weight = weight;
+			    	this.height = height;
+			    	this.speciesName = speciesName;
+			    	this.color = color;
+			    }
+			//Beans.xml
+			    ...
+			    <bean id="zebra" class="org.nerfe.Animal">
+			      <constructor-arg index="0" value="199" />
+			      <constructor-arg index="1" value="1.99" />
+			      <constructor-arg index="2" value="Zebra" />
+			      <constructor-arg index="3" ref="blackAndWhite" />
+			    </bean>
+			    <bean id="blackAndWhite" class="org.nerfe.Color">
+    			  <constructor-arg index="0" value="BlackAndWhite" />
+    			  <constructor-arg index="1" value="587" />
+  			    </bean>  
+			  </beans>
+        Inner Beans
+         We don't necessarily need to use the ref tag, we could just declare the bean in between the beginning and
+         end property tag, but remember you can't reference an InnerBean, it will throws an exception
+            //Beans.xml
+             ...
+              <bean id="zebra" class="org.nerfe.Animal">
+                <property name="Color">
+                  <bean id="blackAndWhite" class="org.nerfe.Color">
+                    <constructor-arg value="BlackAndWhite" />
+                    <constructor-arg value="56" />
+                  </bean>
+                </property>
+              </bean>
+            //InnerBeans.java
+             public class AppliationStart {
+               public class ApplicationStart {
+
+				public static void main(String[] args) {
+					ApplicationContext applicationContext 
+					  = new ClassPathXmlApplicationContext("Beans.xml");
+					Color color = (Color)applicationContext.getBean("blackAndWhite") //-> Throws
+					Animal zebra = (Animal)applicationContext.getBean("zebra");
+					System.out.println(zebra.getColor().getColorName());
+             }
+        -> HOMEWORK: Create a bean Size, with a double weight and double height attribute, then add a size attribute to the
+         animal class that we have creates, then set the size attribute in the animal class usint inner beans.
+    idref Aliases & More
+        IDREF
+         The idref element is simply an error-proof way to pass the id (string-value) of another bean in the container 
+         (to a <constructor-arg/> or <property/> element). Is passing the String value of the existence bean id that works
+         only if existe a bean with that ID, now the propery or constructor-arg that we try to set with idref should be of 
+         String data type.
+            //Animal.java
+             ...
+              public class Animal {
+		        private String speciesName;
+		        private String validator;
+		        private Color color;
+		        private Size size;
+		        ...
+            //Beans.xml
+              ...
+                <bean id="zebra1" class="org.nerfe.Animal">
+                 <property name="Color">
+                   <bean id="blackAndWhite" class="org.nerfe.Color">
+                     <constructor-arg value="BlackAndWhite" />
+                     <constructor-arg value="56" />
+                   </bean>
+                 </property>
+               </bean>
+                <bean id="zebra" class="org.nerfe.Animal">
+                  <property name="validator">
+                    <idref bean="zebra1" />
+                  </property>
+                </bean>
+                <!-- The above bean definition snipet is exactly equivalent (at runtime) to the following snippet:
+                  <bean id="zebra" class="org.nerfe.Animal">
+                    <property name="validator" value="zebra1" />
+                  </bean>
+                -->
+		MORE on idref
+		  <property name="targetName">
+		    <!-- a bean with an id of 'theTargetBean' must exist; otherwise an exception will be thrown -->
+		    <idref local="the targetBean"/>
+		  </property>
+		ALIASES
+		 In a bean definition itself, you may supply more than one name for the bean, by using a combination of up to one 
+		 name specified via the id attribute, and any number of other names via the name attribute. All these names can be 
+		 considered equivalent aliases to the same bean, and are useful for some situations, such as allowing each component
+		 used in an application to refer to a common dependency using a bean name that is specific to that component itself.
+		 Having to specify all aliases when the bean is actually defined is not always adequate however. It is sometimes desirable to introduce an alias foa a bean whish is defined elsewhere. In XML-based configuration metadata this may be accomplished via the use of the <alias/> element.
+		   <alias name="fromName" alias="toName" />
+		 In this case, a bean in the same container which is named 'fromName', may also after the use of this alias 
+		 definition, be referred to as 'toName'.
+		    //ApplicationStart.java
+		      public class ApplicationStart {
+			    public static void main(String[] args) {
+				  ApplicationContext applicationContext = 
+				    new ClassPathXmlApplicationContext("Beans.xml");
+
+				  Animal zebra = (Animal)applicationContext.getBean("zebra1");
+				  System.out.println(zebra.getSize().getWeight());
+			  ...
+			//Beans.xml
+			  <bean id="zebra0" class="..."></bean>
+			  <!-- <bean id="zebra1" class="..."> => If there is not 'zebra' bean rutime execution will throw an Exception-->
+			  <bean id="zebra1" name="zebra" class="org.nerfe.Animal">
+                <property name="size">
+                  <bean id="zebraSize" class="org.nerfe.Size">
+                    <property name="height" value="1.85" />
+                    <property name="weight" value="1.99" />
+                  </bean>
+                </property>
+
+              <alias name="zebra0" alias="zebra" />
+              <!-- <alias name="zebra1" alias="zebra" /> This one will overwrite the alias name="zebra0" definition -->
+         -> HOMEWORK: Take your zebra bean, and create an alias for it using the <alias> tag to give it a name, "bobby".
+    Collection Injection
+        //Beans.xml
+          ...
+          <!-- 
+		      <bean id="zebraListNames" class="org.nerfe.Animal">
+		        <property name="names">
+		          <list>
+		            <value>zebra1</value>
+		            <value>zebra2</value>
+		            <value>zebra2</value>
+		            <value>zebra3</value>
+		            <value>zebra3</value>
+		            <value>zebra3</value>
+		          </list>
+		        </property>
+		      </bean>
+		  -->
+		  <!--
+		    <bean id="zebraSetNames" class="org.nerfe.Animal">
+		      <property name="names">
+		        <set>
+		          <value>zebra1</value>
+		          <value>zebra1</value>
+		          <value>zebra2</value>
+		          <value>zebra3</value>
+		          <value>zebra3</value>
+		          <value>zebra3</value>
+		        </set> 
+		      </property>
+		    </bean>
+		  -->
+		    <bean id="zebraMapNames" class="org.nerfe.Animal">
+		      <property name="names">
+		         <map>
+		           <entry key="1" value="zebra1"/>
+		           <entry key="1" value="zebra0"/>
+		           <entry key="2" value="zebra2"/>
+		           <entry key="3" value="zebra3"/>
+		           <entry key="4" value="zebra4"/>
+		         </map> 
+		      </property>
+		    </bean>
+		 ...
+	    //Animal.java
+	     ...
+	      public class Animal {
+		    private String speciesName;
+		    private String validator;
+		    private Color color;
+		    private Size size;
+		    ...
+		    private Map<Integer, String> names; //Set<String> names; | List<String> names;
+		    public Map<Integer, String> getNames() {
+			  return names;
+			}
+			public void setNames(Map<Integer, String> names) {
+			  this.names = names;
+			}
+		  ...	
+	    //ApplicationStart.java
+	     ...
+	        System.out.println("<<<Zebra>>>");
+			Animal zebra = (Animal)applicationContext.getBean("zebraMapNames");
+			System.out.println(zebra.getNames());
+    Auto-Wiring
+     In Spring framework, you can wire beans automatically with auto-wiring feature. To enable it, just define the "autowire"
+     attribute in <bean>.
+       <bean id="customer" class="..." autowire="byName" />
+     In Spring, 4 Auto-wiring modes are supported:
+       .no - Default, no auto wiring, set it manually via "ref" attribute
+       .byName - Autowire by property name. If the name of a bean is same as the name of other bean property, auto wire it.  
+       .byType - Autowire by property data type. If data type of a bean is compatible with other bean type, auto wire it.
+       .constructor - byType mode in constructor argument
+       [.autodetected - If a default constructor is found, use "autowired by constructor", otherwise use "autowire by type".]
+ 
+        BEAN CLASSES
+            //Person.java
+              public class Person {
+                //...
+              }
+            //Customer.java
+              public class Customer {
+                private Person person;
+    
+                public Customer(Person person){
+                  this.person = person;
+                }
+                public void setPerson(Person person){
+                  this.person = person;
+                }
+                ...
+              }
+        AUTO-WIRING 'NO'
+         This is the default mode, you need to wire your bean via 'ref'/'inner-bean' attribute.
+            //Beans.xml
+              <bean id="zebra1" class="org.nerfe.Animal">
+			     <property name="color" ref="color" />
+			  </bean>
+			  <bean id="color" class="org.nerfe.Color">
+			    <property name="colorName" value="BlackAndWhite" />
+			    <property name="colorID" value="5786" />
+			  </bean>
+			 ...
+        AUTO-WIRING 'BY-NAME'
+         Auto-wire a bean by property name. In this case, since the name of "color" bean is same with the name of the
+         "Animal" bean's property ("color"), so, Spring will auto wire it via setter method - "setColor(Color color)".
+            //Beans.xml
+              <bean id="zebra1" class="org.nerfe.Animal" autowire="byName" />
+			  <bean id="color" class="org.nerfe.Color">
+			    <property name="colorName" value="BlackAndWhite" />
+			    <property name="colorID" value="5786" />
+			  </bean>
+			 ...
+	    AUTO-WIRING 'BY-TYPE'
+	      Auto-wire a bean by property data type. In this case, since the data type of "person" bean is same as the data
+	      type of the "customer" bean's property (Person object), so, Spring will auto wire it via setter method
+	      - "setPerson(Person person)".
+	        //Beans1.xml
+	         ...
+	          <!-- bean definitions here -->
+			  <bean id="zebra1" class="org.nerfe.Animal" autowire="byType" />
+			  <bean id="blackAndWhite" class="org.nerfe.Color">
+			    <property name="colorName" value="BlackAndWhite" />
+			    <property name="colorID" value="5786" />
+			  </bean>
+			 ...
+	        //Beans2.xml
+	         ...
+	          <!-- bean definitions here -->
+			  <bean id="zebra1" class="org.nerfe.Animal" autowire="byType" />
+			  <bean id="blackAndWhite" class="org.nerfe.Color">
+			    <property name="colorName" value="BlackAndWhite" />
+			    <property name="colorID" value="5786" />
+			  </bean>
+			  <bean id="blue" class="org.nerfe.Color">
+			    <property name="colorName" value="Blue" />
+			    <property name="colorID" value="5786" />
+			  </bean>
+			 ...
+			//ApplicationStart.java
+			 package org.nerfe;
+
+             import org.springframework.context.ApplicationContext;
+             import org.springframework.context.support.ClassPathXmlApplicationContext;
+             
+             public class ApplicationStart {
+             
+	             public static void main(String[] args) {
+		             ApplicationContext applicationContext
+		               = new ClassPathXmlApplicationContext("Beans1.xml");
+		               /*= new ClassPathXmlApplicationContext("Beans2.xml"); 
+		                Throws Exception Unsatisfied dependency expressed through bean property 'color';
+		                No qualifying bean of type 'org.nerfe.Color' available: expected single matching bean but found 2:
+		                blackAndWhite,blue */
+	         	    
+		             Animal zebra = (Animal)applicationContext.getBean("zebra1");
+	                 System.out.println(zebra.getColor().getColorName());
+	             }
+             }
+        AUTO-WIRING 'CONSTRUCTOR'
+         Auto-wire a bean by property data type in constructor argument. In this case, since the data type of "color"
+         bean is same as the constructor argument data type in "Animal" bean's property (Color object), so, Spring auto
+         wired it via constructor method - "public Animal(Color color)"
+            //Beans.xml
+             ...
+              <!-- bean definitions here -->
+			  <bean id="zebra1" class="org.nerfe.Animal" autowire="constructor" />
+			  <bean id="blackAndWhite" class="org.nerfe.Color">
+			    <property name="colorName" value="BlackAndWhite" />
+			    <property name="colorID" value="5786" />
+			  </bean>
+			 ...
+            //Animal.java
+              package org.nerfe;
+              ...
+			  public class Animal {
+			      private String speciesName;
+			      private String validator;
+			      private Color color;
+			      private Size size;
+  
+				  public Animal() {}
+				  public Animal(Color color) {
+			        this.color = color;
+			        System.out.println("Called Constructor... <Color>");
+			      }
+			    ...
+		AUTO-WIRING 'AUTODETECT'
+	      If a default constructor is found, uses "constructor"; Otherwise, uses "byType". In this case, since there is
+	      default constructor in "Customer" class, Spring auto wire it via constructor method 
+	      - "public Customer(Person person)"
+	    -> HOMEWORK: Create 3 beans, auto-wire one by type, one by name, and one by constructor.
+	  => autowire-candidate = "false", indicates that this bean will not be auto-wired to anything.
+	  NOTE: The auto-wiring is a tremendous feature of Spring Framework, but if you will use XML Autowiring it can get really very confusing (if you have multiples beans/constructors...), if you as a developer takes a code writed years ago it can be 
+	  hard to understand how the wiring will be implemented.
+    Beans Scopes
+     Declares when our beans will be created.
+     There are actually 5 Bean Scopes: -> singleton/prototype/request/session/global
+     -> Singleton: By-default our beans will be created before we refer to them. The Spring IoC container will create exactly one
+                   instance of the object defined by that bean definition. This single instance will be stored in a cache of such
+                   singleton beans, and all subsequents requests and references for that named bean will result in the 
+                   cached object being returned.
+     -> Prototype: Only create the beans when it's referenced. It results in the creation of a new bean instance every time a 
+                   request for that specific bean is made (that is, it is injected into another bean or it's requested via a 
+                   programmatic getBean() method call on the container).
+                   As a rule of thumb, you should use the prototype scope for all beans that are stateful, while the singleton
+                   scope should be used for stateless beans.
+     -> Request:   Scopes a single bean definition to the lifecycle of a single HTTP request.
+     -> Session:   Scopes a single bean definition to the lifecycle of a HTTP session. Only valid in a SpringApplicationContext
+     -> Global:    Scopes a single bean definition to the lifecycle of a global HTTP Session. Typically only valid when used in 
+     			   a portlet context
